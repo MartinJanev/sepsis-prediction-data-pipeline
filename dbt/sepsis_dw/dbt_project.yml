@@ -20,6 +20,9 @@ vars:
 # Schema names are used verbatim (see macros/generate_schema_name.sql).
 models:
   sepsis_dw:
+    # Fresh CTAS tables have no planner stats until autovacuum catches up; downstream models
+    # planned blind can pick quadratic nested loops (fact_measurement stalled this way).
+    +post-hook: "{% if config.get('materialized') != 'view' %}analyze {{ this }}{% endif %}"
     staging:
       +schema: staging
       +materialized: view
@@ -40,3 +43,4 @@ models:
 seeds:
   sepsis_dw:
     +schema: silver
+    +post-hook: "analyze {{ this }}"

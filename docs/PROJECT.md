@@ -407,6 +407,8 @@ Full-data runtimes: extract 8.4 min (first time) · load 59 s · profile 23 s ·
 
 The data is now clean, validated, split by patient and turned into features. What follows is the data mining itself.
 
+**Shared code.** The `sepsis_mining` package (`src/sepsis_mining/`) holds the pieces every team member needs to get identical: loading the latest export and checking it against `manifest.json`, the `Y_6` and hazard targets, S1/S2 feature preprocessing with train-only statistics, the utility and other metrics, a discrete-time hazard fit and a simulation that checks it. Install it with `uv sync --extra dev --extra mining`.
+
 ### Explore before modelling
 
 - **Check the export.** Load each split and compare the row counts with `manifest.json`. Read `data_dictionary.md`, especially the shortcut-risk notes.

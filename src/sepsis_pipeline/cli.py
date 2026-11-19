@@ -244,6 +244,18 @@ def load_bronze(
         console.print("No files quarantined.")
 
 
+# "cautious": run only tests whose parents are all selected. dbt's default ("eager") also pulls in
+# singular tests that join gold/mart models, which don't exist yet on a fresh database.
+PROFILE_DBT_BUILD = [
+    "build",
+    "--select",
+    "stg_patient_hour",
+    "patient_split",
+    "--indirect-selection",
+    "cautious",
+]
+
+
 @app.command()
 def profile(
     output: Path | None = typer.Option(None, help="Report path (default docs/data_profile.md)."),
@@ -252,7 +264,7 @@ def profile(
     settings = get_settings()
     with etl_run("profile") as run:
         console.print("Building staging view and patient split (dbt)...")
-        result = run_dbt(["build", "--select", "stg_patient_hour", "patient_split"], settings)
+        result = run_dbt(PROFILE_DBT_BUILD, settings)
         if result.returncode != 0:
             raise RuntimeError("dbt build of stg_patient_hour/patient_split failed")
 

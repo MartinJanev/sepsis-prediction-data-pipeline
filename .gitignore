@@ -18,6 +18,7 @@ htmlcov/
 # Pipeline data (never commit raw data or exports)
 data/
 exports/
+results/
 logs/
 
 # dbt
